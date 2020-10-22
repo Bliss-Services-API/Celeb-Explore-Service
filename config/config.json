@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "Sarthak",
-    "password": "Sarthak111@",
-    "database": "celeb",
-    "host": "127.0.0.1",
+    "username": "veduwupienoeva",
+    "password": "58533617c964dc8f40cde45a0c19ac0d6b77420028f3dd0e927d8f73b2a0a87e@",
+    "database": "d7qa90eoe92cof",
+    "host": "ec2-107-22-241-205.compute-1.amazonaws.com",
     "port": "5432",
     "dialect": "postgres"
   },
