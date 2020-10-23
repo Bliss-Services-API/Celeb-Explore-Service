@@ -1,7 +1,6 @@
 'use strict'
 
 const Models = require('../models');
-const chalk = require('../chalk.console');
 
 export default (pgConnection) => {
 
@@ -29,9 +28,8 @@ export default (pgConnection) => {
             celebProfilesModel.findAll({
                 attributes: ['celeb_id','celeb_joining_date','celeb_name','celeb_category']
             })
-            .then((celebs) => { return sortFilterResult(celebs, "celeb_joining_date", 5); })
+            .then((celebs) => { return sortFilterResult(celebs, "celeb_joining_date", 7); })
             .catch((err) => { 
-                console.error(chalk.error(`Error Fetching Trending Now Celebs!\n${err}`)); 
                 return new Error(`Error Fetching Trending Now Celebs!\n${err}`);
             }),
             
@@ -42,9 +40,8 @@ export default (pgConnection) => {
                     attributes: ['celeb_name', 'celeb_category']
                 }]
             })
-            .then((celebs) => { return sortFilterResult(celebs, "celeb_likes", 5); })
+            .then((celebs) => { return sortFilterResult(celebs, "celeb_likes", 7); })
             .catch((err) => { 
-                console.error(chalk.error(`Error Fetching Trending Now Celebs!\n${err}`)); 
                 return new Error(`Error Fetching Trending Now Celebs!\n${err}`);
             })
         ]);
