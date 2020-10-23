@@ -2,7 +2,7 @@
 
 const Models = require('../models');
 
-export default (pgConnection) => {
+module.exports = (pgConnection) => {
 
     const celebStatsModel = Models.default(pgConnection).CelebStatsModel;
     const celebProfilesModel = Models.default(pgConnection).CelebProfileModel;
