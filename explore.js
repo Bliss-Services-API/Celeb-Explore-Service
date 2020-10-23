@@ -26,5 +26,5 @@ CelebDBConnection
 
 
 app.listen(PORT, () => {
-    console.log(chalk.info(`Explore-Celeb-Service is running on port ${PORT}`));
+    console.log(`Explore-Celeb-Service is running on port ${PORT}`);
 })
