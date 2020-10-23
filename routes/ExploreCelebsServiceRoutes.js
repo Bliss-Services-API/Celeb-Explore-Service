@@ -1,7 +1,7 @@
 'use strict';
 
 const router = require('express').Router();
-const CelebExploreController = require('../controllers/CelebExploreController').default;
+const CelebExploreController = require('../controllers/CelebExploreController');
 
 module.exports = (pgConnection) => {
     router.get('/celeb-explore', async (req, res) => {
