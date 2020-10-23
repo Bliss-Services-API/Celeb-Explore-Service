@@ -1,4 +1,4 @@
-export default (pgConnection) => {
+module.exports =  (pgConnection) => {
     const CelebProfileModel = require('./CelebProfileModel')(pgConnection);
     const CelebStatsModel = require('./CelebStatsModel')(pgConnection);
 
