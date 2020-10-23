@@ -4,8 +4,8 @@ const Models = require('../models');
 
 module.exports = (pgConnection) => {
 
-    const celebStatsModel = Models.default(pgConnection).CelebStatsModel;
-    const celebProfilesModel = Models.default(pgConnection).CelebProfileModel;
+    const celebStatsModel = Models(pgConnection).CelebStatsModel;
+    const celebProfilesModel = Models(pgConnection).CelebProfileModel;
 
     //This function sorts the celebs as per the keyToSortBy and returns numberOfCelebs from the top
     const sortFilterResult = function(celebs, keyToSortBy, numberOfCelebs) {
