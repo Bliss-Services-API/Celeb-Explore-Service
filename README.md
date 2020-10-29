@@ -1,4 +1,11 @@
-#Celeb Explore Service
+# Celeb Explore Service
 
-An Nodejs Service for handling all the recently joined celebs, trending celebs, currently online celebs
-and clients favorite celebs.
+NodeJS Service for fetching recently joined, trending, and currently online celebs.
+
+## Documentation
+
+Postman Documentation of all routes accessible throught the service.
+
+```
+https://documenter.getpostman.com/view/5725857/TVRj5oR9#96379855-d695-4cf6-a7ab-46b79f6ec30c
+```
