@@ -1,53 +1,124 @@
 'use strict'
 
-const Models = require('../models');
+/**
+ * 
+ * Controller for handling clients requests for Celeb Explore Service.
+ * 
+ * @param {Sequelize} databaseConnection Sequelize Object containing the Database Connection
+ */
+module.exports = (databaseConnection) => {
 
-module.exports = (pgConnection) => {
+    const Models = require('../models');
+    const celebStatsModel = Models(databaseConnection).celebStatsModel;
+    const celebProfilesModel = Models(databaseConnection).celebProfileModel;
 
-    const celebStatsModel = Models(pgConnection).CelebStatsModel;
-    const celebProfilesModel = Models(pgConnection).CelebProfileModel;
 
-    //This function sorts the celebs as per the keyToSortBy and returns numberOfCelebs from the top
-    const sortFilterResult = function(celebs, keyToSortBy, numberOfCelebs) {
-        const celebList = [];
-        const result = [];
+    /**
+     * 
+     * Function to return Trending Now celebs in the Bliss App
+     * 
+     * @param {String 8bits} clientCategory Categories/Topics client wants to meet celeb in
+     * @param {float >= -1, <= 1} compatibilityCoefficient How much should be celebs categories be similar to the clients categories.
+     * 1 means 100% similar, -1 means exactly opposite. Default value is 0.75, means top 25 similar celebs will be returned
+     * 
+     */
+    const trendingNowCelebs = async (clientCategory, compatibilityCoefficient = 0.75) => {
+        const celebDataValues = await celebProfilesModel.findAll({ includes: [{ model: celebStatsModel }] });
+        const celebs = [];
+        const celebsCompatible = [];
 
-        for(let index in celebs)
-            celebList.push(celebs[index]["dataValues"]);
+        celebDataValues.forEach(celeb => celebs.push(celeb['dataValues']));
 
-        celebList.sort((a, b) => { return a[keyToSortBy] - b[keyToSortBy]; });
+        for(let i = 0; i < celebs.length; i++) {
+            let rank = 0;
+            const celebCategory = celebs[i]['celeb_category'];
+            for(let category = 0; category < celebCategory.length; category++) {
+                if(clientCategory[category] === celebCategory[category])
+                    rank++;
+                else
+                    rank--;
+            }
 
-        for(let index = 0; index < numberOfCelebs && index < celebList.length; index++) 
-            result.push(celebList[index]);
+            celebs[i]['rank'] = rank;
+        };
 
-        return result;
+        if(compatibilityCoefficient > 1)
+            compatibilityCoefficient = 1;
+
+        else if(compatibilityCoefficient < -1)
+            compatibilityCoefficient = -1;
+
+        const rankingFactoy = (clientCategory.length * compatibilityCoefficient);
+
+        celebs.forEach(celeb => {
+            if(celeb['rank'] >= rankingFactoy)
+                celebsCompatible.push(celeb);
+        });
+
+        celebsCompatible.sort((a, b) => {
+            const aTrendingFactor = a['celeb_likes'] + 2 * (a['celeb_bliss_count']);
+            const bTrendingFactor = b['celeb_likes'] + 2 * (b['celeb_bliss_count']);
+
+            return (aTrendingFactor - bTrendingFactor);
+        });
+
+        return {
+            Message: 'DONE',
+            Celebs: celebsCompatible
+        };
     }
 
-    const exploreCelebs = function () {
-        return Promise.all([
-            celebProfilesModel.findAll({
-                attributes: ['celeb_id','celeb_joining_date','celeb_name','celeb_category']
-            })
-            .then((celebs) => { return sortFilterResult(celebs, "celeb_joining_date", 7); })
-            .catch((err) => { 
-                return new Error(`Error Fetching Trending Now Celebs!\n${err}`);
-            }),
-            
-            celebStatsModel.findAll({
-                attributes: ['celeb_id','celeb_likes'],
-                include: [{
-                    model: celebProfilesModel,
-                    attributes: ['celeb_name', 'celeb_category']
-                }]
-            })
-            .then((celebs) => { return sortFilterResult(celebs, "celeb_likes", 7); })
-            .catch((err) => { 
-                return new Error(`Error Fetching Trending Now Celebs!\n${err}`);
-            })
-        ]);
+
+    /**
+     * 
+     * Function to return Celebs Recently Joined Bliss
+     * 
+     * @param {String 8bits} clientCategory Categories/Topics client wants to meet celeb in
+     * @param {float >= -1, <= 1} compatibilityCoefficient How much should be celebs categories be similar to the clients categories.
+     * 1 means 100% similar, -1 means exactly opposite. Default value is 0.75, means top 25 similar celebs will be returned
+     */
+    const recentlyJoinedCelebs = async (clientCategory, compatibilityCoefficient = 0.75) => {
+        const celebDataValues = await celebProfilesModel.findAll({ includes: [{ model: celebStatsModel }] });
+        const celebs = [];
+        const celebsCompatible = [];
+
+        celebDataValues.forEach(celeb => celebs.push(celeb['dataValues']));
+
+        for(let i = 0; i < celebs.length; i++) {
+            let rank = 0;
+            const celebCategory = celebs[i]['celeb_category'];
+            for(let category = 0; category < celebCategory.length; category++) {
+                if(clientCategory[category] === celebCategory[category])
+                    rank++;
+                else
+                    rank--;
+            }
+
+            celebs[i]['rank'] = rank;
+        };
+
+        if(compatibilityCoefficient > 1)
+            compatibilityCoefficient = 1;
+        
+        else if(compatibilityCoefficient < -1)
+            compatibilityCoefficient = -1;
+
+        const rankingFactoy = (clientCategory.length * compatibilityCoefficient);
+
+        celebs.forEach(celeb => {
+            if(celeb['rank'] >= rankingFactoy)
+                celebsCompatible.push(celeb);
+        });
+
+        celebsCompatible.reverse();
+
+        return {
+            Message: 'DONE',
+            Celebs: celebsCompatible
+        };
     };
 
     return {
-        exploreCelebs
+        recentlyJoinedCelebs, trendingNowCelebs
     };
 };

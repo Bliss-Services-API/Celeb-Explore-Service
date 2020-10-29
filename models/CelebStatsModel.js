@@ -1,12 +1,20 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+/**
+ * 
+ * Model of the celeb_stats table in the database celebs;
+ * 
+ * @param {Sequelize} databaseConnection Sequelize Object
+ * 
+ */
+module.exports = (databaseConnection) => {
+    const Sequelize = require('sequelize');
 
-module.exports = (pgConnection) => {
-    const CelebStatsModel = pgConnection.define('celeb_stats', {
-        celeb_id:            { type: Sequelize.STRING(64), allowNull: false, primaryKey: true },
+    const celebStatsModel = databaseConnection.define('celeb_stat', {
+        celeb_name:          { type: Sequelize.STRING, allowNull: false, primaryKey: true },
         celeb_shares:        { type: Sequelize.BIGINT, allowNull: false },
         celeb_likes:         { type: Sequelize.BIGINT, allowNull: false },
+        celeb_bliss_count:   { type: Sequelize.BIGINT, allowNull: false },
         celeb_response_time: { type: Sequelize.BIGINT, allowNull: false },
         celeb_response_rate: { type: Sequelize.BIGINT, allowNull: false },
         celeb_last_online:   { type: Sequelize.DATE },
@@ -14,5 +22,5 @@ module.exports = (pgConnection) => {
         timestamps: false
     });
 
-    return CelebStatsModel;
+    return celebStatsModel;
 };

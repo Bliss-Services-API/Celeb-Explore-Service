@@ -1,12 +1,12 @@
-module.exports =  (pgConnection) => {
-    const CelebProfileModel = require('./CelebProfileModel')(pgConnection);
-    const CelebStatsModel = require('./CelebStatsModel')(pgConnection);
+module.exports =  (databaseConnection) => {
+    const celebProfileModel = require('./CelebProfileModel')(databaseConnection);
+    const celebStatsModel = require('./CelebStatsModel')(databaseConnection);
 
-    CelebStatsModel.belongsTo(CelebProfileModel, { foreignKey: 'celeb_id' });
-    CelebProfileModel.hasOne(CelebStatsModel, { foreignKey: 'celeb_id' });
+    celebStatsModel.belongsTo(celebProfileModel, { foreignKey: 'celeb_id' });
+    celebProfileModel.hasOne(celebStatsModel, { foreignKey: 'celeb_id' });
 
     return {
-        CelebProfileModel,
-        CelebStatsModel
+        celebProfileModel,
+        celebStatsModel
     };
 };
