@@ -4,7 +4,8 @@
   "description": "Service for Exploring Celeb in Bliss App",
   "main": "explore.js",
   "scripts": {
-    "dev-run": "node explore.js"
+    "dev-run": "nodemon explore.js",
+    "start": "node explore.js"
   },
   "author": "Sarthak Joshi",
   "license": "ISC",
