@@ -6,9 +6,9 @@
  * 
  * @param {Sequelize} databaseConnection Sequelize Object containing the Database Connection
  */
-module.exports = (databaseConnection) => {    
-    const router = require('express').Router();
+module.exports = (databaseConnection) => {
     const chalk = require('../chalk.console');
+    const router = require('express').Router();
     const CelebExploreController = require('../controllers/CelebExploreController')(databaseConnection);
 
     /**
@@ -25,16 +25,20 @@ module.exports = (databaseConnection) => {
         const compatibilityCoefficient = req.query.compatibility_coefficient;
 
         try {
-            const response = await CelebExploreController.recentlyJoinedCelebs(clientCategories, compatibilityCoefficient);
+            const response = await CelebExploreController.recentlyJoinedCelebs(clientCategories, compatibilityCoefficient)
             console.log(chalk.success(JSON.stringify(response)));
-            res.send(response);
-        }
-        catch(err) {
-            console.error('Error:\n' + chalk.error(JSON.stringify(err)));
             res.send({
-                ERR: err
+                Message: 'DONE',
+                Response: response
             });
         }
+        catch(err) {
+            res.send({
+                ERR: err.message
+            });
+            console.error(chalk.error(err));
+        }
+        
     });
 
     /**
@@ -47,19 +51,22 @@ module.exports = (databaseConnection) => {
      * 
      */
     router.get('/trending-celebs', async (req, res) => {
-        const clientCategories = req.query.clientCategories;
-        const compatibilityCoefficient = req.query.compatibilityCoefficient;
-
+        const clientCategories = req.query.client_categories;
+        const compatibilityCoefficient = req.query.compatibility_coefficient;
+        
         try {
-            const response = await CelebExploreController.trendingNowCelebs(clientCategories, compatibilityCoefficient);
+            const response = await CelebExploreController.trendingNowCelebs(clientCategories, compatibilityCoefficient)
             console.log(chalk.success(JSON.stringify(response)));
-            res.send(response);
+            res.send({
+                Message: 'DONE',
+                Response: response
+            });
         }
         catch(err) {
-            console.error('Error:\n' + chalk.error(JSON.stringify(err)));
             res.send({
-                ERR: err
+                ERR: err.message
             });
+            console.error(chalk.error(err));
         }
     });
     
