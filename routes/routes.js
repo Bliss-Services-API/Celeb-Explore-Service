@@ -13,6 +13,7 @@ module.exports = (databaseConnection) => {
 
     /**
      * 
+     * 
      * Route for GET Recently Joined Celebs on Bliss App. Req query must have following two params:
      * 
      * client_categories:           String of 8 bits representing categories client has registered

@@ -84,6 +84,7 @@ module.exports = (databaseConnection) => {
 
     /**
      * 
+     * 
      * Function to return Celebs Recently Joined Bliss
      * 
      * @param {String 8bits} clientCategory Categories/Topics client wants to meet celeb in
