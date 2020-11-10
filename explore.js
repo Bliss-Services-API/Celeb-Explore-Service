@@ -65,6 +65,7 @@ databaseConnection = require('./connections/PGConnection')(ENV);
 databaseConnection.authenticate()
     .then(() => console.info(chalk.success(`Database Connection Established Successfully!`)))
     .then(() => app.use('/clients', celebExploreRoutes(databaseConnection)))
+    .then(() => app.get('/ping', (req, res) => res.send('OK')))
     .then(() => console.info(chalk.success(`Routes Established Successfully!`)))
     .catch((err) => console.error('Error:\n' + chalk.error(`Database Connection Connection Failed! ${err}`)));
 
