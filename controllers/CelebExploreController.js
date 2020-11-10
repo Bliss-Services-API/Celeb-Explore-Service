@@ -5,13 +5,16 @@
  * Controller for handling clients requests for Celeb Explore Service.
  * 
  * @param {Sequelize} databaseConnection Sequelize Object containing the Database Connection
+ * 
  */
 module.exports = (databaseConnection) => {
 
+    //Importing Modules
     const Models = require('../models');
+
+    //Initializing Variables
     const celebStatsModel = Models(databaseConnection).celebStatsModel;
     const celebProfilesModel = Models(databaseConnection).celebProfileModel;
-
 
     /**
      * 
@@ -38,9 +41,10 @@ module.exports = (databaseConnection) => {
 
         if(celebs.length !== 0) {
             if(clientCategory.length !== celebs[0]['celeb_category'].length) {
-                return 'Client Categories and Celeb Categories are not similar length';
+                throw new Error('Client Categories and Celeb Categories are not similar length');
             }
         }
+
 
         for(let i = 0; i < celebs.length; i++) {
             let rank = 0;
@@ -75,12 +79,8 @@ module.exports = (databaseConnection) => {
             return (aTrendingFactor - bTrendingFactor);
         });
 
-        return {
-            Celebs: celebsCompatible,
-            CompatibilityCoefficient: compatibilityCoefficient
-        };
-    }
-
+        return celebsCompatible;
+    };
 
     /**
      * 
@@ -93,10 +93,10 @@ module.exports = (databaseConnection) => {
      */
     const recentlyJoinedCelebs = async (clientCategory, compatibilityCoefficient = 0.75) => {
         if(clientCategory === undefined) {
-            return 'Client Category is Undefined';
+            throw new Error('Client Category is Undefined');
         }
         if(clientCategory === null) {
-            return 'Client Category is null';
+            throw new Error('Client Category is null');
         }
 
         const celebDataValues = await celebProfilesModel.findAll({ includes: [{ model: celebStatsModel }] });
@@ -107,7 +107,7 @@ module.exports = (databaseConnection) => {
 
         if(celebs.length !== 0) {
             if(clientCategory.length !== celebs[0]['celeb_category'].length) {
-                return 'Client Categories and Celeb Categories are not similar length';
+                throw new Error('Client Categories and Celeb Categories are not similar length');
             }
         }
 
@@ -139,10 +139,7 @@ module.exports = (databaseConnection) => {
 
         celebsCompatible.reverse();
 
-        return {
-            Celebs: celebsCompatible,
-            CompatibilityCoefficient: compatibilityCoefficient
-        };
+        return celebsCompatible;
     };
 
     return {

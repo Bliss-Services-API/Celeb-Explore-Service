@@ -2,9 +2,14 @@
 
 /**
  * 
+ * Database Connection for the registered celebs in the Bliss App
+ * 
  * @param {String} mode Environment of Server Running. Values can be either 'development' or 'production'
+ * 
  */
 module.exports = (mode) => {
+
+    //Import Modules
     const Sequelize = require('sequelize');
     const databaseConfig = require('../config/config.json');
 
