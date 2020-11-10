@@ -25,7 +25,7 @@ module.exports = (databaseConnection) => {
      * Route for GET Recently Joined Celebs on Bliss App. Req query must have following two params:
      * 
      * client_categories:           String of 8 bits representing categories client has registered
-     * compatibility_coefficient:   (Optional) Float, between -1 and 1, representing how similar clients 
+     * compatibility_coefficient:   (Optional) Float, between 0 and 1, representing how similar clients 
      *                              categories must be celebs categories
      * 
      */
@@ -35,12 +35,13 @@ module.exports = (databaseConnection) => {
 
         try {
             const response = await celebExploreController.recentlyJoinedCelebs(clientCategories, compatibilityCoefficient)
-            console.log(chalk.success(JSON.stringify(response)));
             res.send({
                 Message: 'DONE',
                 Response: 'Recently Joined Celebs List',
-                Celebs: response,
-                CompatibilityCoefficient: compatibilityCoefficient
+                CelebsCount: response[0].length,
+                CompatibilityCoefficient: response[2],
+                ClientPoints: response[1],
+                Celebs: response[0]
             });
         }
         catch(err) {
@@ -57,7 +58,7 @@ module.exports = (databaseConnection) => {
      * Route for GET Trending Celebs on Bliss App. Req query must have following two params:
      * 
      * client_categories:           String of 8 bits representing categories client has registered
-     * compatibility_coefficient:   (Optional) Float, between -1 and 1, representing how similar clients 
+     * compatibility_coefficient:   (Optional) Float, between 0 and 1, representing how similar clients 
      *                              categories must be celebs categories
      * 
      */
@@ -67,12 +68,13 @@ module.exports = (databaseConnection) => {
         
         try {
             const response = await celebExploreController.trendingNowCelebs(clientCategories, compatibilityCoefficient)
-            console.log(chalk.success(JSON.stringify(response)));
             res.send({
                 Message: 'DONE',
                 Response: 'Trendind Celebs List',
-                Celebs: response,
-                CompatibilityCoefficient: compatibilityCoefficient
+                CelebsCount: response[0].length,
+                CompatibilityCoefficient: response[2],
+                ClientPoints: response[1],
+                Celebs: response[0]
             });
         }
         catch(err) {
@@ -93,6 +95,7 @@ module.exports = (databaseConnection) => {
      */
     router.get('/search/name', async (req, res) => {
         const celebName = req.query.celeb_name;
+
         try {
             const celebs = await celebSearchController.searchCelebsByName(celebName);
             const response = {
@@ -101,7 +104,6 @@ module.exports = (databaseConnection) => {
                 Celebs: celebs
             };
 
-            console.log(chalk.success(JSON.stringify(response)));
             res.send(response);
         }
         catch(err) {
@@ -127,11 +129,10 @@ module.exports = (databaseConnection) => {
             const celebs = await celebSearchController.searchCelebsByCategory(celebCategory);
             const response = {
                 Message: 'DONE',
-                Response: `Celeb List by Category: ${celebName}`,
+                Response: `Celeb List by Category: ${celebCategory}`,
                 Celebs: celebs
             };
 
-            console.log(chalk.success(JSON.stringify(response)));
             res.send(response);
         }
         catch(err) {
